@@ -27,7 +27,7 @@ class SeleniumConfig(unittest.TestCase):
                 EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
             )
         finally:
-            self.driver.find_element_by_link_text("Submit").click()
+            self.driver.find_element_by_link_text("Submit").click()  # click submit
             # validating errors using if statement and catching with try block
         try:
             if self.driver.find_element_by_id("forename-err") is None:
@@ -41,9 +41,11 @@ class SeleniumConfig(unittest.TestCase):
             if self.driver.find_element_by_id("message-err") is None:
                 print("message success 1")
             else:
-                print("can't find elements for first list")
+                print("message error 1")
         except NoSuchElementException as firsterror:
             print(firsterror)
+        finally:
+            print("Errors on page")
         try:
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "forename-err")))
@@ -64,16 +66,19 @@ class SeleniumConfig(unittest.TestCase):
         # checking to see if errors are avaliable - could also be an if else statement
         try:
             if self.driver.find_element_by_id("forename-err") is None:
-                print("success")
-            elif self.driver.find_element_by_id("email-err") is None:
-                print("success")
-            elif self.driver.find_element_by_id("message-err") is None:
-                print("success")
+                print("forename success 2")
             else:
-                print("can't find errors")
+                print("forename error 2")
+            if self.driver.find_element_by_id("email-err") is None:
+                print("email success 2")
+            else:
+                print("email error 2")
+            if self.driver.find_element_by_id("message-err") is None:
+                print("message success 2")
+            else:
+                print("message error 2")
         except NoSuchElementException as error:
-            print(error)
-            print("no errors with form")
+            print("second error", error)
         finally:
             time.sleep(5)
             self.driver.quit()
@@ -87,10 +92,10 @@ class SeleniumConfig(unittest.TestCase):
                 EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
             )
         finally:
-            self.driver.find_element_by_link_text("Submit").click()
-        time.sleep(5)
-        if self.driver.find_element_by_class_name("alert.alert-error.ng-scope"):
-            print("found the submit error")
+            pass
+            #self.driver.find_element_by_link_text("Submit").click() # test case 2 doesn't require to submit before populating
+        #if self.driver.find_element_by_class_name("alert.alert-error.ng-scope"):
+        #    print("found the submit error")
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
         message = self.driver.find_element_by_id("message")
@@ -110,7 +115,8 @@ class SeleniumConfig(unittest.TestCase):
         finally:
             if self.driver.find_element_by_class_name("alert.alert-success"):
                 print("success")
-            text = self.driver.find_elements_by_class_name("ng-binding")#.get_attribute("outerHTML") # getting text of alert
+            text = self.driver.find_elements_by_class_name(
+                "ng-binding")  # .get_attribute("outerHTML") # getting text of alert
             for texts in text:
                 print(texts.text)
 
@@ -126,7 +132,8 @@ class SeleniumConfig(unittest.TestCase):
                 EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
             )
         finally:
-            self.driver.find_element_by_link_text("Submit").click()
+            pass
+            #self.driver.find_element_by_link_text("Submit").click() # test case 3 is not testing for a submit post
         # to clear the errors
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
@@ -146,8 +153,7 @@ class SeleniumConfig(unittest.TestCase):
             else:
                 print("can't find elements")
         except NoSuchElementException as suchElementerrors:
-            print(suchElementerrors)
-            print("No Errors")
+            print("no errors", suchElementerrors)
 
         time.sleep(5)
         self.driver.quit()
@@ -184,7 +190,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
     SeleniumConfig().jupiter_3("", "john.pham92", "")
-    SeleniumConfig().jupiter_4()
+    # SeleniumConfig().jupiter_4()
