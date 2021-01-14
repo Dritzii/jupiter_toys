@@ -28,4 +28,4 @@ I have added this so that we can capture the stack trace much easier and also th
 
 
 If you are not using a chrome driver, please download the alternative webdrivers and add it into the same directory, but replacing the name of the global ABSOLUTE path
-
+In main.py just under the imports
