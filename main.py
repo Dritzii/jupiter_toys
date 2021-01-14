@@ -13,7 +13,8 @@ import sys
 
 # sys.setprofile(tracefunc) # set this if you want a custom trace function - not particularly useful but it is interesting to watch
 
-ABSOLUTE = os.path.dirname(os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global instead of object const
+ABSOLUTE = os.path.dirname(
+    os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global instead of object constructor
 
 
 class SeleniumConfig(unittest.TestCase):
@@ -103,7 +104,7 @@ class SeleniumConfig(unittest.TestCase):
         except NoSuchElementException as error:
             print("second message-err", error)
         finally:
-            self.driver.quit()
+            self.quit_driver(self.driver)
 
     @log.log_error()
     def jupiter_2(self, name, emailaddress, messageto):
@@ -155,7 +156,7 @@ class SeleniumConfig(unittest.TestCase):
                 "ng-binding")  # .get_attribute("outerHTML") # getting text of alert
             for texts in text:
                 print(texts.text)
-            self.driver.quit()
+            self.quit_driver(self.driver)
 
     @log.log_error()
     def jupiter_3(self, name, emailaddress, messageto):
@@ -204,7 +205,7 @@ class SeleniumConfig(unittest.TestCase):
         except NoSuchElementException as suchElementerrors:
             print("no errors", suchElementerrors)
         finally:
-            self.driver.quit()
+            self.quit_driver(self.driver)
 
     @log.log_error()
     def jupiter_4(self, cow_click, bunny_click):
@@ -240,7 +241,7 @@ class SeleniumConfig(unittest.TestCase):
             table_body = self.driver.find_element_by_xpath(
                 "/html/body/div[2]/div/form/table/tbody")  # print out cart message
             print(table_body.text)
-            self.driver.quit()
+            self.quit_driver(self.driver)
 
     @staticmethod
     def click_multiple(objecttoclick, numberofclicks):
@@ -273,9 +274,14 @@ class SeleniumConfig(unittest.TestCase):
         print("sending data ", elem, data)
         elem.send_keys(data)
 
+    @staticmethod
+    def quit_driver(driver):
+        print("Quitting driver")
+        driver.quit()
+
 
 if __name__ == "__main__":
-    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_3("", "john.pham92", "")
+    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_3("", "john.pham92", "")
     SeleniumConfig().jupiter_4(5, 10)
