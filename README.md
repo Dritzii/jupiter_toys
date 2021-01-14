@@ -17,3 +17,15 @@ Pip install -r requirements.txt
 Afterwards if it is successful, you can run
 
 Python3 main.py 
+
+
+
+Notes:
+
+Any errors will be populated in a log file in the same directory when you run main.py and not in the console
+
+I have added this so that we can capture the stack trace much easier and also the method culprit
+
+
+
+
