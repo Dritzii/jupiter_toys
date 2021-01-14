@@ -9,15 +9,16 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
 
+ABSOLUTE = os.path.dirname(os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global
+
 
 class SeleniumConfig(unittest.TestCase):
 
     def __init__(self):
         super().__init__()
-        self.absolute = os.path.dirname(os.path.abspath(__file__)) + "/chromedriver.exe"
         options = webdriver.ChromeOptions()
         options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome(self.absolute, options=options)
+        self.driver = webdriver.Chrome(ABSOLUTE, options=options)
         self.action = webdriver.common.action_chains.ActionChains(self.driver)
 
     def jupiter_1(self, name, emailaddress, messageto):
@@ -147,8 +148,8 @@ class SeleniumConfig(unittest.TestCase):
         action = self.action
         action.move_to_element_with_offset(message, 50, 0)  # move 50 pixels to the right
         action.click()  # click to the right
-        action.perform()
-        time.sleep(10)
+        action.perform()  # the perform method seems to vary between 10 - 20 seconds
+        time.sleep(20)
         # self.driver.find_element_by_link_text("Submit").click() # not going to submit to get error validations
         # checking to see if errors are avaliable - could also be an if else statement
         try:
