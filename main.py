@@ -182,10 +182,12 @@ class SeleniumConfig(unittest.TestCase):
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
         message = self.driver.find_element_by_id("message")
+        telephone = self.driver.find_element_by_id("telephone")
         # populating mandatory fields
         self.sending_form_data(forename, name)
         self.sending_form_data(email, emailaddress)
         self.sending_form_data(message, messageto)
+        self.sending_form_data(telephone, messageto) # added this to allow message error to pop up
         self.action_movement(self.action, message, 55, 0)  # performs mouse click
         # self.driver.find_element_by_link_text("Submit").click() # not going to submit to get error validations using above instead
         # checking to see if errors are avaliable
@@ -257,13 +259,12 @@ class SeleniumConfig(unittest.TestCase):
             print(error)
 
     @staticmethod
-    def action_movement(action, message, pixelr, pixell, sleepint=20):
+    def action_movement(action, message, pixelr, pixell, sleepint=10):
         print("action movement", action, message, pixelr, pixell)
         print("pixels to the right: ", pixelr, "\npixels to the left: ", pixell)
         print("sleeping seconds: ", sleepint)
         action.move_to_element_with_offset(message, pixelr, pixell)  # move 50 pixels to the right
-        action.click()  # click to the right
-        action.perform()  # the perform method seems to vary between 10 - 20 seconds
+        action.click().perform()  # click to the right
         time.sleep(sleepint)  # making sure that the click actually happens before the try catch happens
 
     @staticmethod
@@ -278,7 +279,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_3("", "john.pham92", "")
-    # SeleniumConfig().jupiter_4(5, 10)
+    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_3("", "john.pham92", "")
+    #SeleniumConfig().jupiter_4(5, 10)
