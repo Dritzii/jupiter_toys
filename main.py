@@ -262,7 +262,7 @@ class SeleniumConfig(unittest.TestCase):
     @staticmethod
     def action_movement(action, message, pixelr, pixell, sleepint=20):
         print("action movement", action, message, pixelr, pixell)
-        print("pixels to the right: ", pixelr, "pixels to the left: ", pixell)
+        print("pixels to the right: ", pixelr, "\npixels to the left: ", pixell)
         print("sleeping seconds: ", sleepint)
         action.move_to_element_with_offset(message, pixelr, pixell)  # move 50 pixels to the right
         action.click()  # click to the right
