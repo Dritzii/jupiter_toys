@@ -198,7 +198,7 @@ class SeleniumConfig(unittest.TestCase):
         finally:
             self.driver.quit()
 
-    def jupiter_4(self):
+    def jupiter_4(self, cow_click, bunny_click):
         """
         Test case 4:
             1.	From the home page go to shop page
@@ -222,9 +222,9 @@ class SeleniumConfig(unittest.TestCase):
         cow = self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/ul/li[6]/div/p/a[@class='btn btn-success']")  # assign button click to variable for 2 clicks
         bunny = self.driver.find_element_by_xpath("/html/body/div[2]/div/ul/li[4]/div/p/a[@class='btn btn-success']")
-        cow.click()
-        cow.click()
-        bunny.click()
+
+        self.click_multiple(cow, cow_click)
+        self.click_multiple(bunny, bunny_click)
         self.driver.find_element_by_id("nav-cart").click()
         try:
             WebDriverWait(self.driver, 10).until(
@@ -242,9 +242,14 @@ class SeleniumConfig(unittest.TestCase):
             print(table_body.text)
             self.driver.quit()
 
+    @staticmethod
+    def click_multiple(objecttoclick, numberofclicks):
+        for i in range(numberofclicks):
+            objecttoclick.click()
+
 
 if __name__ == "__main__":
-    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_3("", "john.pham92", "")
-    SeleniumConfig().jupiter_4()
+    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_3("", "john.pham92", "")
+    SeleniumConfig().jupiter_4(5, 10)
