@@ -2,6 +2,7 @@ import unittest
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common import actions, action_chains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,6 +18,7 @@ class SeleniumConfig(unittest.TestCase):
         options = webdriver.ChromeOptions()
         options.add_argument("--start-maximized")
         self.driver = webdriver.Chrome(self.absolute, options=options)
+        self.action = webdriver.common.action_chains.ActionChains(self.driver)
 
     def jupiter_1(self, name, emailaddress, messageto):
         self.driver.get('http://jupiter.cloud.planittesting.com')
@@ -93,8 +95,8 @@ class SeleniumConfig(unittest.TestCase):
             )
         finally:
             pass
-            #self.driver.find_element_by_link_text("Submit").click() # test case 2 doesn't require to submit before populating
-        #if self.driver.find_element_by_class_name("alert.alert-error.ng-scope"):
+            # self.driver.find_element_by_link_text("Submit").click() # test case 2 doesn't require to submit before populating
+        # if self.driver.find_element_by_class_name("alert.alert-error.ng-scope"):
         #    print("found the submit error")
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
@@ -133,7 +135,7 @@ class SeleniumConfig(unittest.TestCase):
             )
         finally:
             pass
-            #self.driver.find_element_by_link_text("Submit").click() # test case 3 is not testing for a submit post
+            # self.driver.find_element_by_link_text("Submit").click() # test case 3 is not testing for a submit post
         # to clear the errors
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
@@ -142,18 +144,25 @@ class SeleniumConfig(unittest.TestCase):
         forename.send_keys(name)
         email.send_keys(emailaddress)
         message.send_keys(messageto)
+        action = self.action
+        action.move_to_element_with_offset(message, 50, 0)  # move 50 pixels to the right
+        action.click()  # click to the right
+        action.perform()
+        time.sleep(10)
+        # self.driver.find_element_by_link_text("Submit").click() # not going to submit to get error validations
         # checking to see if errors are avaliable - could also be an if else statement
         try:
             if self.driver.find_element_by_id("forename-err") is not None:
                 print("forename form error")
             if self.driver.find_element_by_id("email-err") is not None:
                 print("email form error")
-            if self.driver.find_element_by_id("message-err") is not None:
+            if self.driver.find_element_by_id(
+                    "message-err") is not None:  # need to reiterate this there's a bug where even if the string is empty, the error validation will not appear unless you click outside the box
                 print("message form error")
-            else:
-                print("can't find elements")
         except NoSuchElementException as suchElementerrors:
             print("no errors", suchElementerrors)
+        finally:
+            pass
 
         time.sleep(5)
         self.driver.quit()
@@ -190,7 +199,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
     SeleniumConfig().jupiter_3("", "john.pham92", "")
     # SeleniumConfig().jupiter_4()
