@@ -245,7 +245,7 @@ class SeleniumConfig(unittest.TestCase):
 
     @staticmethod
     def click_multiple(objecttoclick, numberofclicks):
-        print("Clicking ", objecttoclick, numberofclicks)
+        print("Clicking ", numberofclicks)
         for i in range(numberofclicks):
             objecttoclick.click()
 
