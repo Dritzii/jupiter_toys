@@ -25,6 +25,10 @@ class SeleniumConfig(unittest.TestCase):
         self.action = webdriver.common.action_chains.ActionChains(self.driver)
         self.driver.implicitly_wait(5)
 
+    def pre_start(self):
+        self.driver.get('http://jupiter.cloud.planittesting.com')
+        self.assertIn("Jupiter Toys", self.driver.title)
+
     def jupiter_1(self, name, emailaddress, messageto):
         """
         Test case 1:
@@ -38,20 +42,20 @@ class SeleniumConfig(unittest.TestCase):
         :param messageto: STRING
         :return: None
         """
-        self.driver.get('http://jupiter.cloud.planittesting.com')
-        self.assertIn("Jupiter Toys", self.driver.title)
+        self.pre_start()
         self.driver.find_element_by_id("nav-contact").click()
         try:
-            #WebDriverWait(self.driver, 10).until(
+            # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
-            #)
+            # )
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
             )
         finally:
-            #self.driver.find_element_by_link_text("Submit").click()  # click submit
-            self.driver.find_element_by_xpath("/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
+            # self.driver.find_element_by_link_text("Submit").click()  # click submit
+            self.driver.find_element_by_xpath(
+                "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
         self.assertTrue(self.driver.find_element_by_link_text(
             "Submit").is_enabled())
         # validating errors using if statement and catching with try block
@@ -116,15 +120,15 @@ class SeleniumConfig(unittest.TestCase):
         :param messageto: STRING
         :return: None
         """
-        self.driver.get('http://jupiter.cloud.planittesting.com')
-        self.assertIn("Jupiter Toys", self.driver.title)
+        self.pre_start()
         self.driver.find_element_by_id("nav-contact").click()
         try:
-            #WebDriverWait(self.driver, 10).until(
+            # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit")) # stack overflow says fullx path is better?
-            #)
+            # )
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
             )
         finally:
             pass
@@ -140,7 +144,7 @@ class SeleniumConfig(unittest.TestCase):
         print("sending form data")
         self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
-        #self.driver.find_element_by_link_text("Submit").click()
+        # self.driver.find_element_by_link_text("Submit").click()
         try:
             print(
                 "waiting for alert success")  ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
@@ -171,13 +175,12 @@ class SeleniumConfig(unittest.TestCase):
         :return: None
         """
         action = self.action
-        self.driver.get('http://jupiter.cloud.planittesting.com')
-        self.assertIn("Jupiter Toys", self.driver.title)
+        self.pre_start()
         self.driver.find_element_by_id("nav-contact").click()
         try:
-            #WebDriverWait(self.driver, 10).until(
+            # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
-            #)
+            # )
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")))
@@ -222,8 +225,7 @@ class SeleniumConfig(unittest.TestCase):
 
         :return: None
         """
-        self.driver.get('http://jupiter.cloud.planittesting.com')
-        self.assertIn("Jupiter Toys", self.driver.title)
+        self.pre_start()
         self.driver.find_element_by_id("nav-shop").click()
         try:
             WebDriverWait(self.driver, 10).until(
@@ -235,34 +237,44 @@ class SeleniumConfig(unittest.TestCase):
         cow = self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/ul/li[6]/div/p/a[@class='btn btn-success']")  # assign button click to variable for 2 clicks
         bunny = self.driver.find_element_by_xpath("/html/body/div[2]/div/ul/li[4]/div/p/a[@class='btn btn-success']")
-
         self.click_multiple(cow, cow_click)
         self.click_multiple(bunny, bunny_click)
         self.driver.find_element_by_id("nav-cart").click()
-        try:
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']"))
-                # waiting for the cart to appear after nav-cart
-            )
-        except NoSuchElementException as error:
-            print(error)
-        finally:
-            cart_message = self.driver.find_element_by_xpath(
-                "/html/body/div[2]/div/p[@class='cart-msg']")  # find cart message
-            print(cart_message.text)
-            table_body = self.driver.find_element_by_xpath(
-                "/html/body/div[2]/div/form/table/tbody")  # print out cart message
-            print(table_body.text)
-            self.driver.quit()
+        self.wait_implicity_for_element(self.driver, 10, By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']")
+        # try:
+        #    WebDriverWait(self.driver, 10).until(
+        #        EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']"))
+        # waiting for the cart to appear after nav-cart
+        #    )
+        # except NoSuchElementException as error:
+        #    print(error)
+        # finally:
+        #    cart_message = self.driver.find_element_by_xpath(
+        #        "/html/body/div[2]/div/p[@class='cart-msg']")  # find cart message
+        #    print(cart_message.text)
+        #    table_body = self.driver.find_element_by_xpath(
+        #        "/html/body/div[2]/div/form/table/tbody")  # print out cart message
+        #    print(table_body.text)
+        #    self.driver.quit()
 
     @staticmethod
     def click_multiple(objecttoclick, numberofclicks):
         for i in range(numberofclicks):
             objecttoclick.click()
 
+    @staticmethod
+    def wait_implicity_for_element(driver, length, bypath, elem):
+        try:
+            WebDriverWait(driver, length).until(
+                EC.presence_of_element_located((bypath, elem))
+                # waiting for the cart to appear after nav-cart
+            )
+        except NoSuchElementException as error:
+            print(error)
+
 
 if __name__ == "__main__":
     SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    #SeleniumConfig().jupiter_3("", "john.pham92", "")
-    #SeleniumConfig().jupiter_4(5, 10)
+    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_3("", "john.pham92", "")
+    # SeleniumConfig().jupiter_4(5, 10)
