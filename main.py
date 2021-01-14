@@ -42,11 +42,16 @@ class SeleniumConfig(unittest.TestCase):
         self.assertIn("Jupiter Toys", self.driver.title)
         self.driver.find_element_by_id("nav-contact").click()
         try:
+            #WebDriverWait(self.driver, 10).until(
+            #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
+            #)
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
             )
         finally:
-            self.driver.find_element_by_link_text("Submit").click()  # click submit
+            #self.driver.find_element_by_link_text("Submit").click()  # click submit
+            self.driver.find_element_by_xpath("/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
         self.assertTrue(self.driver.find_element_by_link_text(
             "Submit").is_enabled())
         # validating errors using if statement and catching with try block
@@ -115,8 +120,11 @@ class SeleniumConfig(unittest.TestCase):
         self.assertIn("Jupiter Toys", self.driver.title)
         self.driver.find_element_by_id("nav-contact").click()
         try:
+            #WebDriverWait(self.driver, 10).until(
+            #    EC.presence_of_element_located((By.LINK_TEXT, "Submit")) # stack overflow says fullx path is better?
+            #)
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
+                EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
             )
         finally:
             pass
@@ -130,7 +138,9 @@ class SeleniumConfig(unittest.TestCase):
         email.send_keys(emailaddress)
         message.send_keys(messageto)
         print("sending form data")
-        self.driver.find_element_by_link_text("Submit").click()
+        self.driver.find_element_by_xpath(
+            "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
+        #self.driver.find_element_by_link_text("Submit").click()
         try:
             print(
                 "waiting for alert success")  ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
@@ -160,13 +170,17 @@ class SeleniumConfig(unittest.TestCase):
         :param messageto: STRING
         :return: None
         """
+        action = self.action
         self.driver.get('http://jupiter.cloud.planittesting.com')
         self.assertIn("Jupiter Toys", self.driver.title)
         self.driver.find_element_by_id("nav-contact").click()
         try:
+            #WebDriverWait(self.driver, 10).until(
+            #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
+            #)
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
-            )
+                EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")))
         finally:
             pass
             # self.driver.find_element_by_link_text("Submit").click() # test case 3 is not testing for a submit post
@@ -178,7 +192,6 @@ class SeleniumConfig(unittest.TestCase):
         forename.send_keys(name)
         email.send_keys(emailaddress)
         message.send_keys(messageto)
-        action = self.action
         action.move_to_element_with_offset(message, 50, 0)  # move 50 pixels to the right
         action.click()  # click to the right
         action.perform()  # the perform method seems to vary between 10 - 20 seconds
@@ -202,7 +215,7 @@ class SeleniumConfig(unittest.TestCase):
         """
         Test case 4:
             1.	From the home page go to shop page
-            2.	Click buy button 2 times on “Funny Cow”
+            2.	Click buy button 2 times on “Funny Cow” # added method to add no. in args
             3.	Click buy button 1 time on “Fluffy Bunny”
             4.	Click the cart menu
             5.	Verify the items are in the cart
@@ -249,7 +262,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_3("", "john.pham92", "")
-    SeleniumConfig().jupiter_4(5, 10)
+    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_3("", "john.pham92", "")
+    #SeleniumConfig().jupiter_4(5, 10)
