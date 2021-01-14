@@ -48,10 +48,8 @@ class SeleniumConfig(unittest.TestCase):
             # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
             # )
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
-            )
+            self.wait_implicity_for_element(self.driver, 10, By.XPATH,
+                                            "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")
         finally:
             # self.driver.find_element_by_link_text("Submit").click()  # click submit
             self.driver.find_element_by_xpath(
@@ -126,10 +124,8 @@ class SeleniumConfig(unittest.TestCase):
             # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit")) # stack overflow says fullx path is better?
             # )
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']"))
-            )
+            self.wait_implicity_for_element(self.driver, 10, By.XPATH,
+                                            "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")
         finally:
             pass
             # self.driver.find_element_by_link_text("Submit").click() # test case 2 doesn't require to submit before populating
@@ -146,11 +142,12 @@ class SeleniumConfig(unittest.TestCase):
             "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
         # self.driver.find_element_by_link_text("Submit").click()
         try:
-            print(
-                "waiting for alert success")  ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
-            WebDriverWait(self.driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "alert.alert-success"))
-            )
+            ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
+            # WebDriverWait(self.driver, 30).until(
+            #    EC.presence_of_element_located((By.CLASS_NAME, "alert.alert-success"))
+
+            self.wait_implicity_for_element(self.driver, 30, By.CLASS_NAME,
+                                            "alert.alert-success")
         except NoSuchElementException as error:
             print(error)
         finally:
@@ -181,9 +178,8 @@ class SeleniumConfig(unittest.TestCase):
             # WebDriverWait(self.driver, 10).until(
             #    EC.presence_of_element_located((By.LINK_TEXT, "Submit"))
             # )
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")))
+            self.wait_implicity_for_element(self.driver, 10, By.XPATH,
+                                            "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']")
         finally:
             pass
             # self.driver.find_element_by_link_text("Submit").click() # test case 3 is not testing for a submit post
@@ -202,7 +198,7 @@ class SeleniumConfig(unittest.TestCase):
         # self.driver.find_element_by_link_text("Submit").click() # not going to submit to get error validations using above instead
         # checking to see if errors are avaliable
         try:
-            if self.driver.find_element_by_id("forename-err") is not None:
+            if self.driver.find_element_by_id("forename-err") is not None: # assuming that my input still has errors
                 print("forename form error")
             if self.driver.find_element_by_id("email-err") is not None:
                 print("email form error")
@@ -228,53 +224,46 @@ class SeleniumConfig(unittest.TestCase):
         self.pre_start()
         self.driver.find_element_by_id("nav-shop").click()
         try:
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "products.ng-scope"))
-            )
-        except NoSuchElementException as error:
-            print(error)
+            self.wait_implicity_for_element(self.driver, 10, By.CLASS_NAME, "products.ng-scope")
+        finally:
+            pass
         # locating buttons for stuffed animals
         cow = self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/ul/li[6]/div/p/a[@class='btn btn-success']")  # assign button click to variable for 2 clicks
         bunny = self.driver.find_element_by_xpath("/html/body/div[2]/div/ul/li[4]/div/p/a[@class='btn btn-success']")
-        self.click_multiple(cow, cow_click)
+        self.click_multiple(cow, cow_click) # assuming someone wants to click more than once
         self.click_multiple(bunny, bunny_click)
         self.driver.find_element_by_id("nav-cart").click()
-        self.wait_implicity_for_element(self.driver, 10, By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']")
-        # try:
-        #    WebDriverWait(self.driver, 10).until(
-        #        EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']"))
-        # waiting for the cart to appear after nav-cart
-        #    )
-        # except NoSuchElementException as error:
-        #    print(error)
-        # finally:
-        #    cart_message = self.driver.find_element_by_xpath(
-        #        "/html/body/div[2]/div/p[@class='cart-msg']")  # find cart message
-        #    print(cart_message.text)
-        #    table_body = self.driver.find_element_by_xpath(
-        #        "/html/body/div[2]/div/form/table/tbody")  # print out cart message
-        #    print(table_body.text)
-        #    self.driver.quit()
+        try:
+            self.wait_implicity_for_element(self.driver, 10, By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']")
+        finally:
+            cart_message = self.driver.find_element_by_xpath(
+                "/html/body/div[2]/div/p[@class='cart-msg']")  # find cart message
+            print(cart_message.text)
+            table_body = self.driver.find_element_by_xpath(
+                "/html/body/div[2]/div/form/table/tbody")  # print out cart message
+            print(table_body.text)
+            self.driver.quit()
 
     @staticmethod
     def click_multiple(objecttoclick, numberofclicks):
+        print("Clicking ", objecttoclick, numberofclicks)
         for i in range(numberofclicks):
             objecttoclick.click()
 
     @staticmethod
     def wait_implicity_for_element(driver, length, bypath, elem):
+        print("implcitly waiting", driver, length, bypath, elem)
         try:
             WebDriverWait(driver, length).until(
                 EC.presence_of_element_located((bypath, elem))
-                # waiting for the cart to appear after nav-cart
             )
         except NoSuchElementException as error:
             print(error)
 
 
 if __name__ == "__main__":
-    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    # SeleniumConfig().jupiter_3("", "john.pham92", "")
-    # SeleniumConfig().jupiter_4(5, 10)
+    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_3("", "john.pham92", "")
+    #SeleniumConfig().jupiter_4(5, 10)
