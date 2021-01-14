@@ -279,7 +279,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
     SeleniumConfig().jupiter_3("", "john.pham92", "")
-    #SeleniumConfig().jupiter_4(5, 10)
+    SeleniumConfig().jupiter_4(5, 10)
