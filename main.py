@@ -5,6 +5,7 @@ from selenium.webdriver.common import actions, action_chains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import log
 from trace import tracefunc
 import time
 import os
@@ -25,10 +26,12 @@ class SeleniumConfig(unittest.TestCase):
         self.action = webdriver.common.action_chains.ActionChains(self.driver)
         self.driver.implicitly_wait(5)
 
+    @log.log_error()
     def pre_start(self):
         self.driver.get('http://jupiter.cloud.planittesting.com')
         self.assertIn("Jupiter Toys", self.driver.title)
 
+    @log.log_error()
     def jupiter_1(self, name, emailaddress, messageto):
         """
         Test case 1:
@@ -79,14 +82,10 @@ class SeleniumConfig(unittest.TestCase):
         email = self.driver.find_element_by_id("email")
         message = self.driver.find_element_by_id("message")
         # populating mandatory fields
-        forename.send_keys(name)
-        email.send_keys(emailaddress)
-        message.send_keys(messageto)
-        action = self.action
-        action.move_to_element_with_offset(message, 50, 0)  # move 50 pixels to the right
-        action.click()  # click to the right
-        action.perform()  # the perform method seems to vary between 10 - 20 seconds
-        time.sleep(20)  # making sure that the click actually happens before the try catch happens
+        self.sending_form_data(forename, name)
+        self.sending_form_data(email, emailaddress)
+        self.sending_form_data(message, messageto)
+        self.action_movement(self.action, message, 50, 0)  # performs mouse click
         # checking to see if errors are avaliable - could also be an if else statement
         try:
             if self.driver.find_element_by_id("forename-err") is None:
@@ -106,6 +105,7 @@ class SeleniumConfig(unittest.TestCase):
         finally:
             self.driver.quit()
 
+    @log.log_error()
     def jupiter_2(self, name, emailaddress, messageto):
         """
         Test case 2:
@@ -134,10 +134,9 @@ class SeleniumConfig(unittest.TestCase):
         forename = self.driver.find_element_by_id("forename")
         email = self.driver.find_element_by_id("email")
         message = self.driver.find_element_by_id("message")
-        forename.send_keys(name)
-        email.send_keys(emailaddress)
-        message.send_keys(messageto)
-        print("sending form data")
+        self.sending_form_data(forename, name)
+        self.sending_form_data(email, emailaddress)
+        self.sending_form_data(message, messageto)
         self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/form/div/a[@class='btn-contact btn btn-primary']").click()
         # self.driver.find_element_by_link_text("Submit").click()
@@ -145,7 +144,6 @@ class SeleniumConfig(unittest.TestCase):
             ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
             # WebDriverWait(self.driver, 30).until(
             #    EC.presence_of_element_located((By.CLASS_NAME, "alert.alert-success"))
-
             self.wait_implicity_for_element(self.driver, 30, By.CLASS_NAME,
                                             "alert.alert-success")
         except NoSuchElementException as error:
@@ -159,6 +157,7 @@ class SeleniumConfig(unittest.TestCase):
                 print(texts.text)
             self.driver.quit()
 
+    @log.log_error()
     def jupiter_3(self, name, emailaddress, messageto):
         """
         Test case 3:
@@ -188,17 +187,14 @@ class SeleniumConfig(unittest.TestCase):
         email = self.driver.find_element_by_id("email")
         message = self.driver.find_element_by_id("message")
         # populating mandatory fields
-        forename.send_keys(name)
-        email.send_keys(emailaddress)
-        message.send_keys(messageto)
-        action.move_to_element_with_offset(message, 50, 0)  # move 50 pixels to the right
-        action.click()  # click to the right
-        action.perform()  # the perform method seems to vary between 10 - 20 seconds
-        time.sleep(20)  # making sure that the click actually happens before the try catch happens
+        self.sending_form_data(forename, name)
+        self.sending_form_data(email, emailaddress)
+        self.sending_form_data(message, messageto)
+        self.action_movement(self.action, message, 55, 0)  # performs mouse click
         # self.driver.find_element_by_link_text("Submit").click() # not going to submit to get error validations using above instead
         # checking to see if errors are avaliable
         try:
-            if self.driver.find_element_by_id("forename-err") is not None: # assuming that my input still has errors
+            if self.driver.find_element_by_id("forename-err") is not None:  # assuming that my input still has errors
                 print("forename form error")
             if self.driver.find_element_by_id("email-err") is not None:
                 print("email form error")
@@ -210,6 +206,7 @@ class SeleniumConfig(unittest.TestCase):
         finally:
             self.driver.quit()
 
+    @log.log_error()
     def jupiter_4(self, cow_click, bunny_click):
         """
         Test case 4:
@@ -231,7 +228,7 @@ class SeleniumConfig(unittest.TestCase):
         cow = self.driver.find_element_by_xpath(
             "/html/body/div[2]/div/ul/li[6]/div/p/a[@class='btn btn-success']")  # assign button click to variable for 2 clicks
         bunny = self.driver.find_element_by_xpath("/html/body/div[2]/div/ul/li[4]/div/p/a[@class='btn btn-success']")
-        self.click_multiple(cow, cow_click) # assuming someone wants to click more than once
+        self.click_multiple(cow, cow_click)  # assuming someone wants to click more than once
         self.click_multiple(bunny, bunny_click)
         self.driver.find_element_by_id("nav-cart").click()
         try:
@@ -261,9 +258,24 @@ class SeleniumConfig(unittest.TestCase):
         except NoSuchElementException as error:
             print(error)
 
+    @staticmethod
+    def action_movement(action, message, pixelr, pixell, sleepint=20):
+        print("action movement", action, message, pixelr, pixell)
+        print("pixels to the right: ", pixelr, "pixels to the left: ", pixell)
+        print("sleeping seconds: ", sleepint)
+        action.move_to_element_with_offset(message, pixelr, pixell)  # move 50 pixels to the right
+        action.click()  # click to the right
+        action.perform()  # the perform method seems to vary between 10 - 20 seconds
+        time.sleep(sleepint)  # making sure that the click actually happens before the try catch happens
+
+    @staticmethod
+    def sending_form_data(elem, data):
+        print("sending data ", elem, data)
+        elem.send_keys(data)
+
 
 if __name__ == "__main__":
-    #SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
-    #SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_3("", "john.pham92", "")
-    #SeleniumConfig().jupiter_4(5, 10)
+    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_3("", "john.pham92", "")
+    SeleniumConfig().jupiter_4(5, 10)
