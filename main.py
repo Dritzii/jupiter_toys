@@ -143,8 +143,6 @@ class SeleniumConfig(unittest.TestCase):
         # self.driver.find_element_by_link_text("Submit").click()
         try:
             ## this seems to be random from 10 - 30 seconds based on how many times you've posted form data towards the endpoint
-            # WebDriverWait(self.driver, 30).until(
-            #    EC.presence_of_element_located((By.CLASS_NAME, "alert.alert-success"))
             self.wait_implicity_for_element(self.driver, 30, By.CLASS_NAME,
                                             "alert.alert-success")
         except NoSuchElementException as error:
@@ -152,10 +150,7 @@ class SeleniumConfig(unittest.TestCase):
         finally:
             if self.driver.find_element_by_class_name("alert.alert-success"):
                 print("success")
-            text = self.driver.find_elements_by_class_name(
-                "ng-binding")  # .get_attribute("outerHTML") # getting text of alert
-            for texts in text:
-                print(texts.text)
+            self.show_body_elem(self.driver, "/html/body/div[2]/div/div/strong[@class='ng-binding']")
             self.quit_driver(self.driver)
 
     @log.log_error()
@@ -231,17 +226,19 @@ class SeleniumConfig(unittest.TestCase):
         bunny = self.driver.find_element_by_xpath("/html/body/div[2]/div/ul/li[4]/div/p/a[@class='btn btn-success']")
         self.click_multiple(cow, cow_click)  # assuming someone wants to click more than once
         self.click_multiple(bunny, bunny_click)
-        self.driver.find_element_by_id("nav-cart").click()
+        self.driver.find_element_by_id(
+            "nav-cart").click()  # can use xpath too /html/body/div[1]/div/div/div/ul[2]/li[4]/a
         try:
             self.wait_implicity_for_element(self.driver, 10, By.XPATH, "/html/body/div[2]/div/p[@class='cart-msg']")
         finally:
-            cart_message = self.driver.find_element_by_xpath(
-                "/html/body/div[2]/div/p[@class='cart-msg']")  # find cart message
-            print(cart_message.text)
-            table_body = self.driver.find_element_by_xpath(
-                "/html/body/div[2]/div/form/table/tbody")  # print out cart message
-            print(table_body.text)
+            self.show_body_elem(self.driver, "/html/body/div[2]/div/p[@class='cart-msg']")
+            self.show_body_elem(self.driver, "/html/body/div[2]/div/form/table/tbody")
             self.quit_driver(self.driver)
+
+    @staticmethod
+    def show_body_elem(driver, xpath):
+        data = driver.find_element_by_xpath(xpath)
+        print(data.text)
 
     @staticmethod
     def click_multiple(objecttoclick, numberofclicks):
@@ -281,7 +278,7 @@ class SeleniumConfig(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
+    # SeleniumConfig().jupiter_1("johnpham", "john.pham92@email.com", "heyhey")
     SeleniumConfig().jupiter_2("johnpham", "john.pham92@email.com", "heyhey")
-    SeleniumConfig().jupiter_3("", "john.pham92", "")
-    SeleniumConfig().jupiter_4(5, 10)
+    # SeleniumConfig().jupiter_3("", "john.pham92", "")
+    # SeleniumConfig().jupiter_4(5, 10)
