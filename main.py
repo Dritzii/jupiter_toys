@@ -5,8 +5,12 @@ from selenium.webdriver.common import actions, action_chains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from trace import tracefunc
 import time
 import os
+import sys
+
+# sys.setprofile(tracefunc) # set this if you want a custom trace function - not particularly useful but it is interesting to watch
 
 ABSOLUTE = os.path.dirname(os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global instead of object const
 
