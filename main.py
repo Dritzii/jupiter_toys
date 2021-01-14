@@ -14,7 +14,7 @@ import sys
 # sys.setprofile(tracefunc) # set this if you want a custom trace function - not particularly useful but it is interesting to watch
 
 ABSOLUTE = os.path.dirname(
-    os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global instead of object constructor
+    os.path.abspath(__file__)) + "/chromedriver.exe"  # added as global instead of object constructor, you can change your webdriver here just replace the name, this is an assumption
 
 
 class SeleniumConfig(unittest.TestCase):
